@@ -1,0 +1,45 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.12'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+//	id 'org.springframework.boot' version '2.2.2.RELEASE'
+//	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+//	id 'java'
+}
+
+
+group = 'org.launchcode'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-validation:2.5.5'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.5.5'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.5.6'
+	implementation 'android.arch.persistence.room:runtime:1.1.1'
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'javax.activation:javax.activation-api:1.2.0'
+	annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.5.5'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation('org.springframework.boot:spring-boot-starter-test:2.5.6') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testImplementation("org.jmockit:jmockit:1.49")
+}
+
+test {
+	useJUnitPlatform()
+//	jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
+//	useJUnitPlatform()
+}
