@@ -10,20 +10,24 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+@SuppressWarnings("ALL")
 @Controller
 @RequestMapping("employers")
 public class EmployerController {
 
 
+    public EmployerController() {
+    }
+
     @GetMapping("add")
-    public String displayAddEmployerForm(Model model) {
+    public String displayAddEmployerForm(final Model model) {
         model.addAttribute(new Employer());
         return "employers/add";
     }
 
     @PostMapping("add")
-    public String processAddEmployerForm(@ModelAttribute @Valid Employer newEmployer,
-                                    Errors errors, Model model) {
+    public String processAddEmployerForm(@ModelAttribute @Valid final Employer newEmployer,
+                                         final Errors errors, final Model model) {
 
         if (errors.hasErrors()) {
             return "employers/add";
@@ -33,11 +37,11 @@ public class EmployerController {
     }
 
     @GetMapping("view/{employerId}")
-    public String displayViewEmployer(Model model, @PathVariable int employerId) {
+    public String displayViewEmployer(final Model model, @PathVariable final int employerId) {
 
-        Optional optEmployer = null;
+        final Optional optEmployer = null;
         if (optEmployer.isPresent()) {
-            Employer employer = (Employer) optEmployer.get();
+            final Employer employer = (Employer) optEmployer.get();
             model.addAttribute("employer", employer);
             return "employers/view";
         } else {

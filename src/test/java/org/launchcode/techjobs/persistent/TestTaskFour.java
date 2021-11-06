@@ -1,25 +1,13 @@
 package org.launchcode.techjobs.persistent;
 
-import mockit.Expectations;
-import mockit.Mock;
-import mockit.Mocked;
 import org.junit.jupiter.api.Test;
-import org.launchcode.techjobs.persistent.controllers.HomeController;
-import org.launchcode.techjobs.persistent.controllers.ListController;
-import org.launchcode.techjobs.persistent.models.Employer;
-import org.launchcode.techjobs.persistent.models.Job;
-import org.launchcode.techjobs.persistent.models.Skill;
-import org.launchcode.techjobs.persistent.models.data.JobRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
+import org.launchcode.persistent.models.Employer;
+import org.launchcode.persistent.models.Skill;
 
 import javax.persistence.ManyToMany;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,12 +24,12 @@ public class TestTaskFour extends AbstractTest {
     * */
     @Test
     public void testSkillClassHasJobsField () throws ClassNotFoundException {
-        Class skillClass = getClassByName("models.Skill");
+        final Class skillClass = getClassByName("models.Skill");
         Field jobsField = null;
 
         try {
             jobsField = skillClass.getDeclaredField("jobs");
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             fail("Skill class does not have a jobs field");
         }
     }
@@ -51,10 +39,10 @@ public class TestTaskFour extends AbstractTest {
     * */
     @Test
     public void testSkillJobsFieldHasCorrectType () throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class skillClass = getClassByName("models.Skill");
-        Method getJobsMethod = skillClass.getMethod("getJobs");
-        Skill skill = new Skill();
-        Object jobsObj = getJobsMethod.invoke(skill);
+        final Class skillClass = getClassByName("models.Skill");
+        final Method getJobsMethod = skillClass.getMethod("getJobs");
+        final Skill skill = new Skill();
+        final Object jobsObj = getJobsMethod.invoke(skill);
         assertTrue(jobsObj instanceof List);
     }
 
@@ -63,11 +51,11 @@ public class TestTaskFour extends AbstractTest {
     * */
     @Test
     public void testSkillJobsFieldHasCorrectAnnotation () throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class skillClass = getClassByName("models.Skill");
-        Field jobsField = skillClass.getDeclaredField("jobs");
-        Annotation annotation = jobsField.getDeclaredAnnotation(ManyToMany.class);
+        final Class skillClass = getClassByName("models.Skill");
+        final Field jobsField = skillClass.getDeclaredField("jobs");
+        final Annotation annotation = jobsField.getDeclaredAnnotation(ManyToMany.class);
         assertNotNull(annotation);
-        Method mappedByMethod = annotation.getClass().getMethod("mappedBy");
+        final Method mappedByMethod = annotation.getClass().getMethod("mappedBy");
         assertEquals("skills", mappedByMethod.invoke(annotation));
     }
 
@@ -76,9 +64,9 @@ public class TestTaskFour extends AbstractTest {
     * */
     @Test
     public void testJobSkillsHasCorrectTypeAndAnnotation () throws ClassNotFoundException, NoSuchFieldException {
-        Class jobClass = getClassByName("models.Job");
-        Field skillsField = jobClass.getDeclaredField("skills");
-        Type skillsFieldType = skillsField.getType();
+        final Class jobClass = getClassByName("models.Job");
+        final Field skillsField = jobClass.getDeclaredField("skills");
+        final Type skillsFieldType = skillsField.getType();
         assertEquals(List.class, skillsFieldType, "Job.skills should be of type List<Skills>");
         assertNotNull(skillsField.getAnnotation(ManyToMany.class), "Job.skills is missing the correct mapping annotation");
     }
@@ -89,19 +77,19 @@ public class TestTaskFour extends AbstractTest {
     * */
     @Test
     public void testJobSkillsRefactoring () throws ClassNotFoundException, NoSuchMethodException {
-        Class jobClass = getClassByName("models.Job");
+        final Class jobClass = getClassByName("models.Job");
         try {
-            Constructor nonDefaultConstructor = jobClass.getConstructor(Employer.class, List.class);
-        } catch (NoSuchMethodException e) {
+            final Constructor nonDefaultConstructor = jobClass.getConstructor(Employer.class, List.class);
+        } catch (final NoSuchMethodException e) {
             fail("The non-default constructor has not been refactored to handle the new skills field type");
         }
 
-        Method getSkillsMethod = jobClass.getMethod("getSkills");
+        final Method getSkillsMethod = jobClass.getMethod("getSkills");
         getSkillsMethod.getReturnType().isInstance(List.class);
 
         try {
             jobClass.getMethod("setSkills", List.class);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             fail("Job.setSkills has not been refactoring to handle the new skills field type");
         }
     }
@@ -216,14 +204,14 @@ public class TestTaskFour extends AbstractTest {
 
     @Test
     public void testSqlQuery () throws IOException {
-        String queryFileContents = getFileContents("queries.sql");
+        final String queryFileContents = getFileContents("queries.sql");
 
-        Pattern queryPattern = Pattern.compile("SELECT\\s+\\*\\s+FROM\\s+skill" +
+        final Pattern queryPattern = Pattern.compile("SELECT\\s+\\*\\s+FROM\\s+skill" +
                 "\\s*(LEFT|INNER)?\\s+JOIN\\s+job_skills\\s+ON\\s+(skill.id\\s+=\\s+job_skills.skills_id|job_skills.skills_id\\s+=\\s+skill.id)" +
                 "(\\s*WHERE\\s+job_skills.jobs_id\\s+IS\\s+NOT\\s+NULL)?" +
                 "\\s*ORDER\\s+BY\\s+name\\s+ASC;", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-        Matcher queryMatcher = queryPattern.matcher(queryFileContents);
-        boolean queryFound = queryMatcher.find();
+        final Matcher queryMatcher = queryPattern.matcher(queryFileContents);
+        final boolean queryFound = queryMatcher.find();
         assertTrue(queryFound, "Task 4 SQL query is incorrect. Test your query against your database to find the error.");
     }
 

@@ -1,6 +1,6 @@
 package org.launchcode.persistent.controllers;
+
 import org.launchcode.persistent.models.Job;
-//import org.launchcode.techjobs.persistent.models.Job;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by LaunchCode
  */
+@SuppressWarnings("ALL")
 @Controller
 public class HomeController {
 
     @RequestMapping("")
-    public String index(Model model) {
+    public String index(final Model model) {
 
         model.addAttribute("title", "My Jobs");
 
@@ -25,15 +25,15 @@ public class HomeController {
     }
 
     @GetMapping("add")
-    public String displayAddJobForm(Model model) {
+    public String displayAddJobForm(final Model model) {
         model.addAttribute("title", "Add Job");
         model.addAttribute(new Job());
         return "add";
     }
 
     @PostMapping("add")
-    public String processAddJobForm(@ModelAttribute @Valid Job newJob,
-                                       Errors errors, Model model, @RequestParam int employerId, @RequestParam List<Integer> skills) {
+    public String processAddJobForm(@ModelAttribute @Valid final Job newJob,
+                                    final Errors errors, final Model model, @RequestParam final int employerId, @RequestParam final List<Integer> skills) {
 
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Job");
@@ -44,7 +44,7 @@ public class HomeController {
     }
 
     @GetMapping("view/{jobId}")
-    public String displayViewJob(Model model, @PathVariable int jobId) {
+    public String displayViewJob(final Model model, @PathVariable final int jobId) {
 
         return "view";
     }

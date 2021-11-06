@@ -16,6 +16,7 @@ import java.util.HashMap;
 /**
  * Created by LaunchCode
  */
+@SuppressWarnings("ALL")
 @Controller
 @RequestMapping(value = "list")
 public class ListController {
@@ -34,14 +35,14 @@ public class ListController {
     }
 
     @RequestMapping("")
-    public String list(Model model) {
+    public String list(final Model model) {
 
         return "list";
     }
 
     @RequestMapping(value = "jobs")
-    public String listJobsByColumnAndValue(Model model, @RequestParam String column, @RequestParam String value) {
-        Iterable<Job> jobs;
+    public String listJobsByColumnAndValue(final Model model, @RequestParam final String column, @RequestParam final String value) {
+        final Iterable<Job> jobs;
         if (column.toLowerCase().equals("all")){
             jobs = jobRepository.findAll();
             model.addAttribute("title", "All Jobs");

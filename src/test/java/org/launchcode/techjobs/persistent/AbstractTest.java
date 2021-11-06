@@ -10,12 +10,12 @@ import java.nio.file.Path;
  */
 public class AbstractTest {
 
-    protected static String getFileContents(String fileName) throws IOException {
-        Path path = FileSystems.getDefault().getPath(fileName);
+    protected static String getFileContents(final String fileName) throws IOException {
+        final Path path = FileSystems.getDefault().getPath(fileName);
         return Files.readString(path);
     }
 
-    protected Class getClassByName(String className) throws ClassNotFoundException {
+    protected Class getClassByName(final String className) throws ClassNotFoundException {
         return Class.forName("org.launchcode.techjobs.persistent." + className);
     }
 

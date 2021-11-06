@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.*;
 
 
 //import static org.launchcode.techjobs.persistent.controllers.ListController.columnChoices;
-import static org.launchcode.persistent.controllers.ListController.columnChoices;
+
 
 /**
  * Created by LaunchCode
  */
+@SuppressWarnings("ALL")
 @Controller
 @RequestMapping("search")
 public class SearchController {
@@ -22,21 +23,21 @@ public class SearchController {
     private JobRepository jobRepository;
 
     @RequestMapping("")
-    public String search(Model model) {
-        model.addAttribute("columns", columnChoices);
+    public String search(final Model model) {
+        model.addAttribute("columns", ListController.columnChoices);
         return "search";
     }
 
     @PostMapping("results")
-    public String displaySearchResults(Model model, @RequestParam String searchType, @RequestParam String searchTerm){
-        Iterable<Job> jobs;
+    public String displaySearchResults(final Model model, @RequestParam final String searchType, @RequestParam final String searchTerm){
+        final Iterable<Job> jobs;
         if (searchTerm.toLowerCase().equals("all") || searchTerm.equals("")){
             jobs = jobRepository.findAll();
         } else {
             jobs = JobData.findByColumnAndValue(searchType, searchTerm, jobRepository.findAll());
         }
-        model.addAttribute("columns", columnChoices);
-        model.addAttribute("title", "Jobs with " + columnChoices.get(searchType) + ": " + searchTerm);
+        model.addAttribute("columns", ListController.columnChoices);
+        model.addAttribute("title", "Jobs with " + ListController.columnChoices.get(searchType) + ": " + searchTerm);
         model.addAttribute("jobs", jobs);
 
         return "search";

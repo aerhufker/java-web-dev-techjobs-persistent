@@ -1,19 +1,8 @@
 package org.launchcode.techjobs.persistent;
 
-import mockit.Expectations;
-import mockit.Mocked;
 import org.junit.jupiter.api.Test;
-import org.launchcode.techjobs.persistent.controllers.EmployerController;
-import org.launchcode.techjobs.persistent.models.Employer;
-import org.launchcode.techjobs.persistent.models.Skill;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +13,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,8 +35,8 @@ public class TestTaskTwo extends AbstractTest {
     * */
     @Test
     public void testAbstractEntityHasCorrectAnnotation () throws ClassNotFoundException {
-        Class abstractEntityClass = getClassByName("models.AbstractEntity");
-        Annotation annotation = abstractEntityClass.getAnnotation(MappedSuperclass.class);
+        final Class abstractEntityClass = getClassByName("models.AbstractEntity");
+        final Annotation annotation = abstractEntityClass.getAnnotation(MappedSuperclass.class);
         assertNotNull(annotation, "AbstractEntity must have @MappedSuperclass annotation");
     }
 
@@ -53,18 +45,18 @@ public class TestTaskTwo extends AbstractTest {
     * */
     @Test
     public void testIdFieldHasCorrectAnnotations () throws ClassNotFoundException {
-        Class abstractEntityClass = getClassByName("models.AbstractEntity");
+        final Class abstractEntityClass = getClassByName("models.AbstractEntity");
         Field idField = null;
         try {
             idField = abstractEntityClass.getDeclaredField("id");
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             fail("AbstractEntity does not have an id field");
         }
 
-        Annotation idAnnotation = idField.getAnnotation(Id.class);
+        final Annotation idAnnotation = idField.getAnnotation(Id.class);
         assertNotNull(idAnnotation, "id field must have @Id annotation");
 
-        Annotation generatedValueAnnotation = idField.getAnnotation(GeneratedValue.class);
+        final Annotation generatedValueAnnotation = idField.getAnnotation(GeneratedValue.class);
         assertNotNull(generatedValueAnnotation, "id field must have @GeneratedValue annotation");
     }
 
@@ -73,15 +65,15 @@ public class TestTaskTwo extends AbstractTest {
     * */
     @Test
     public void testNameFieldHasCorrectAnnotations () throws ClassNotFoundException {
-        Class abstractEntityClass = getClassByName("models.AbstractEntity");
+        final Class abstractEntityClass = getClassByName("models.AbstractEntity");
         Field nameField = null;
         try {
             nameField = abstractEntityClass.getDeclaredField("name");
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             fail("AbstractEntity does not have a name field");
         }
 
-        Annotation sizeAnnotation = nameField.getAnnotation(Size.class);
+        final Annotation sizeAnnotation = nameField.getAnnotation(Size.class);
         assertNotNull(sizeAnnotation, "name field must use @Size to validate input");
 
         // we allow for either @NotBlank or @NotNull to ensure the field is not empty
@@ -102,15 +94,15 @@ public class TestTaskTwo extends AbstractTest {
     * */
     @Test
     public void testEmployerHasLocationField () throws ClassNotFoundException {
-        Class employerClass = getClassByName("models.Employer");
+        final Class employerClass = getClassByName("models.Employer");
         Field locationField = null;
         try {
             locationField = employerClass.getDeclaredField("location");
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             fail("Employer class has no location field");
         }
 
-        Class locationClass = locationField.getType();
+        final Class locationClass = locationField.getType();
         assertEquals(String.class, locationClass);
     }
 
@@ -119,26 +111,26 @@ public class TestTaskTwo extends AbstractTest {
     * */
     @Test
     public void testLocationFieldHasPublicAccessors () throws ClassNotFoundException, NoSuchFieldException {
-        Class employerClass = getClassByName("models.Employer");
-        Field locationField = employerClass.getDeclaredField("location");
+        final Class employerClass = getClassByName("models.Employer");
+        final Field locationField = employerClass.getDeclaredField("location");
 
         Method getLocationMethod = null;
         try {
             getLocationMethod = employerClass.getDeclaredMethod("getLocation");
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             fail("Employer class has no getLocation method");
         }
-        int getLocationModifier = getLocationMethod.getModifiers();
+        final int getLocationModifier = getLocationMethod.getModifiers();
         assertEquals(Modifier.PUBLIC, getLocationModifier, "getLocation must be public");
 
         Method setLocationMethod = null;
         try {
             setLocationMethod = employerClass.getDeclaredMethod("setLocation", String.class);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             fail("Employer class has no setLocation method");
         }
 
-        int setLocationModifier = setLocationMethod.getModifiers();
+        final int setLocationModifier = setLocationMethod.getModifiers();
         assertEquals(Modifier.PUBLIC, setLocationModifier, "setLocation must be public");
     }
 
@@ -147,10 +139,10 @@ public class TestTaskTwo extends AbstractTest {
     * */
     @Test
     public void testLocationHasCorrectValidationAnnotations () throws ClassNotFoundException, NoSuchFieldException {
-        Class employerClass = getClassByName("models.Employer");
-        Field locationField = employerClass.getDeclaredField("location");
+        final Class employerClass = getClassByName("models.Employer");
+        final Field locationField = employerClass.getDeclaredField("location");
 
-        Annotation sizeAnnotation = locationField.getAnnotation(Size.class);
+        final Annotation sizeAnnotation = locationField.getAnnotation(Size.class);
         assertNotNull(sizeAnnotation, "location field must use @Size to validate input");
 
         // we allow for either @NotBlank or @NotNull to ensure the field is not empty
@@ -167,8 +159,8 @@ public class TestTaskTwo extends AbstractTest {
     * */
     @Test
     public void testEmployerHasPersistenceAnnotation () throws ClassNotFoundException {
-        Class employerClass = getClassByName("models.Employer");
-        Annotation entityAnnotation = employerClass.getAnnotation(Entity.class);
+        final Class employerClass = getClassByName("models.Employer");
+        final Annotation entityAnnotation = employerClass.getAnnotation(Entity.class);
         assertNotNull(entityAnnotation, "Employer must have the @Entity persistence annotation");
     }
 
@@ -177,10 +169,10 @@ public class TestTaskTwo extends AbstractTest {
     * */
     @Test
     public void testEmployerHasDefaultConstructor () throws ClassNotFoundException {
-        Class employerClass = getClassByName("models.Employer");
+        final Class employerClass = getClassByName("models.Employer");
         try {
-            Constructor defaultConstructor = employerClass.getDeclaredConstructor();
-        } catch (NoSuchMethodException e) {
+            final Constructor defaultConstructor = employerClass.getDeclaredConstructor();
+        } catch (final NoSuchMethodException e) {
             fail("Employer has no no-arg/default constructor");
         }
     }
@@ -194,15 +186,15 @@ public class TestTaskTwo extends AbstractTest {
      * */
     @Test
     public void testSkillHasDescriptionField () throws ClassNotFoundException {
-        Class skillClass = getClassByName("models.Skill");
+        final Class skillClass = getClassByName("models.Skill");
         Field descriptionField = null;
         try {
             descriptionField = skillClass.getDeclaredField("description");
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             fail("Skill class has no description field");
         }
 
-        Class descriptionClass = descriptionField.getType();
+        final Class descriptionClass = descriptionField.getType();
         assertEquals(String.class, descriptionClass);
     }
 
@@ -211,26 +203,26 @@ public class TestTaskTwo extends AbstractTest {
      * */
     @Test
     public void testDescriptionFieldHasPublicAccessors () throws ClassNotFoundException, NoSuchFieldException {
-        Class skillClass = getClassByName("models.Skill");
-        Field descriptionField = skillClass.getDeclaredField("description");
+        final Class skillClass = getClassByName("models.Skill");
+        final Field descriptionField = skillClass.getDeclaredField("description");
 
         Method getDescriptionMethod = null;
         try {
             getDescriptionMethod = skillClass.getDeclaredMethod("getDescription");
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             fail("Skill class has no getDescription method");
         }
-        int getDescriptionModifier = getDescriptionMethod.getModifiers();
+        final int getDescriptionModifier = getDescriptionMethod.getModifiers();
         assertEquals(Modifier.PUBLIC, getDescriptionModifier, "getDescription must be public");
 
         Method setDescriptionMethod = null;
         try {
             setDescriptionMethod = skillClass.getDeclaredMethod("setDescription", String.class);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             fail("Skill class has no setDescription method");
         }
 
-        int setDescriptionModifier = setDescriptionMethod.getModifiers();
+        final int setDescriptionModifier = setDescriptionMethod.getModifiers();
         assertEquals(Modifier.PUBLIC, setDescriptionModifier, "setDescription must be public");
     }
 
@@ -239,8 +231,8 @@ public class TestTaskTwo extends AbstractTest {
      * */
     @Test
     public void testSkillHasPersistenceAnnotation () throws ClassNotFoundException {
-        Class skillClass = getClassByName("models.Skill");
-        Annotation entityAnnotation = skillClass.getAnnotation(Entity.class);
+        final Class skillClass = getClassByName("models.Skill");
+        final Annotation entityAnnotation = skillClass.getAnnotation(Entity.class);
         assertNotNull(entityAnnotation, "Skill must have the @Entity persistence annotation");
     }
 
@@ -249,10 +241,10 @@ public class TestTaskTwo extends AbstractTest {
      * */
     @Test
     public void testSkillHasDefaultConstructor () throws ClassNotFoundException {
-        Class skillClass = getClassByName("models.Skill");
+        final Class skillClass = getClassByName("models.Skill");
         try {
-            Constructor defaultConstructor = skillClass.getDeclaredConstructor();
-        } catch (NoSuchMethodException e) {
+            final Constructor defaultConstructor = skillClass.getDeclaredConstructor();
+        } catch (final NoSuchMethodException e) {
             fail("Skill has no no-arg/default constructor");
         }
     }
@@ -267,8 +259,8 @@ public class TestTaskTwo extends AbstractTest {
     @Test
     public void testEmployerRepositoryExists () {
         try {
-            Class employerRepositoryClass = getClassByName("models.data.EmployerRepository");
-        } catch (ClassNotFoundException e) {
+            final Class employerRepositoryClass = getClassByName("models.data.EmployerRepository");
+        } catch (final ClassNotFoundException e) {
             fail("EmployerRepository does not exist");
         }
     }
@@ -278,8 +270,8 @@ public class TestTaskTwo extends AbstractTest {
      * */
     @Test
     public void testEmployerRepositoryImplementsJpaInterface () throws ClassNotFoundException {
-        Class employerRepositoryClass = getClassByName("models.data.EmployerRepository");
-        Class[] interfaces = employerRepositoryClass.getInterfaces();
+        final Class employerRepositoryClass = getClassByName("models.data.EmployerRepository");
+        final Class[] interfaces = employerRepositoryClass.getInterfaces();
         assertTrue(Arrays.asList(interfaces).contains(CrudRepository.class), "EmployerRepository must implement CrudRepository");
     }
 
@@ -288,8 +280,8 @@ public class TestTaskTwo extends AbstractTest {
      * */
     @Test
     public void testEmployerRepositoryHasRepositoryAnnotation () throws ClassNotFoundException {
-        Class employerRepositoryClass = getClassByName("models.data.EmployerRepository");
-        Annotation annotation = employerRepositoryClass.getAnnotation(Repository.class);
+        final Class employerRepositoryClass = getClassByName("models.data.EmployerRepository");
+        final Annotation annotation = employerRepositoryClass.getAnnotation(Repository.class);
     }
 
     /*
@@ -298,8 +290,8 @@ public class TestTaskTwo extends AbstractTest {
     @Test
     public void testSkillRepositoryExists () {
         try {
-            Class skillRepositoryClass = getClassByName("models.data.SkillRepository");
-        } catch (ClassNotFoundException e) {
+            final Class skillRepositoryClass = getClassByName("models.data.SkillRepository");
+        } catch (final ClassNotFoundException e) {
             fail("SkillRepository does not exist");
         }
     }
@@ -309,8 +301,8 @@ public class TestTaskTwo extends AbstractTest {
      * */
     @Test
     public void testSkillRepositoryImplementsJpaInterface () throws ClassNotFoundException {
-        Class skillRepositoryClass = getClassByName("models.data.SkillRepository");
-        Class[] interfaces = skillRepositoryClass.getInterfaces();
+        final Class skillRepositoryClass = getClassByName("models.data.SkillRepository");
+        final Class[] interfaces = skillRepositoryClass.getInterfaces();
         assertTrue(Arrays.asList(interfaces).contains(CrudRepository.class), "SkillRepository must implement CrudRepository");
     }
 
@@ -319,8 +311,8 @@ public class TestTaskTwo extends AbstractTest {
      * */
     @Test
     public void testSkillRepositoryHasRepositoryAnnotation () throws ClassNotFoundException {
-        Class skillRepositoryClass = getClassByName("models.data.SkillRepository");
-        Annotation annotation = skillRepositoryClass.getAnnotation(Repository.class);
+        final Class skillRepositoryClass = getClassByName("models.data.SkillRepository");
+        final Annotation annotation = skillRepositoryClass.getAnnotation(Repository.class);
     }
 
     // --- END DATA LAYER TESTS --- //
@@ -545,11 +537,11 @@ public class TestTaskTwo extends AbstractTest {
     * */
     @Test
     public void testSqlQuery() throws IOException {
-        String queryFileContents = getFileContents("queries.sql");
+        final String queryFileContents = getFileContents("queries.sql");
 
-        Pattern queryPattern = Pattern.compile("SELECT\\s+name\\s+FROM\\s+employer\\s+WHERE\\s+location\\s+=\\s+\"St.\\s+Louis\\s+City\";", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-        Matcher queryMatcher = queryPattern.matcher(queryFileContents);
-        boolean queryFound = queryMatcher.find();
+        final Pattern queryPattern = Pattern.compile("SELECT\\s+name\\s+FROM\\s+employer\\s+WHERE\\s+location\\s+=\\s+\"St.\\s+Louis\\s+City\";", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+        final Matcher queryMatcher = queryPattern.matcher(queryFileContents);
+        final boolean queryFound = queryMatcher.find();
         assertTrue(queryFound, "Task 2 SQL query is incorrect. Test your query against your database to find the error.");
     }
 }
